@@ -1,18 +1,22 @@
-import { StyleSheet } from "react-native";
-
-import EditScreenInfo from "@/components/EditScreenInfo";
+import { ActivityIndicator, FlatList, StyleSheet } from "react-native";
 import { Text, View } from "@/components/Themed";
+import products from "../../../assets/data/products";
+import ProductItemList from "@/components/ProductItemList";
 
 export default function TabOneScreen() {
+  if (!products) {
+    return <ActivityIndicator size="large" />;
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Hello World!!</Text>
-      <View
-        style={styles.separator}
-        lightColor="#eee"
-        darkColor="rgba(255,255,255,0.1)"
+      <FlatList
+        numColumns={2}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={{ gap: 10 }}
+        data={products}
+        renderItem={({ item }) => <ProductItemList item={item} />}
       />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
     </View>
   );
 }
@@ -20,16 +24,9 @@ export default function TabOneScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: "80%",
   },
 });

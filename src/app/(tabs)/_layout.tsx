@@ -25,19 +25,20 @@ export default function TabLayout() {
         // Disable the static render of the header on web
         // to prevent a hydration error in React Navigation v6.
         headerShown: useClientOnlyValue(false, true),
+        headerTitleAlign: "center",
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
-          title: "Tab One",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: "Menu",
+          tabBarIcon: ({ color }) => <TabBarIcon name="home" color={color} />,
           headerRight: () => (
             <Link href="/modal" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome
-                    name="info-circle"
+                    name="opencart"
                     size={25}
                     color={Colors[colorScheme ?? "light"].text}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
