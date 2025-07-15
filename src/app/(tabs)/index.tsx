@@ -19,7 +19,7 @@ export default function TabOneScreen() {
         }}
         keyExtractor={(item) => item.id.toString()}
         data={products}
-        renderItem={({ item }) => <ProductItemList item={item} />}
+        renderItem={({ item }) => <ProductItemList product={item} />}
       />
     </View>
   );

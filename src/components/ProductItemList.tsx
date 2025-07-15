@@ -1,41 +1,44 @@
 import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
 import { Product } from "@/types";
+import { Link } from "expo-router";
 
 const defaultImage =
   "https://media.istockphoto.com/id/1366580759/vector/white-broken-plate-with-fork-and-knife.jpg?s=612x612&w=0&k=20&c=9mwXZPvfICESTumsuRZ0FJgSifBgDmzcvmGy854tTzI=";
 
 type ProductListItemProps = {
-  item: Product;
+  product: Product;
 };
 
-const ProductItemList = ({ item }: ProductListItemProps) => {
+const ProductItemList = ({ product }: ProductListItemProps) => {
   return (
-    <TouchableOpacity style={styles.container} activeOpacity={0.85}>
-      <View style={styles.imgView}>
-        <Image
-          source={{ uri: item.image || defaultImage }}
-          style={styles.image}
-        />
-        {item.discount && (
-          <View style={styles.discountBadge}>
-            <Text style={styles.discountText}>{item.discount}% OFF</Text>
-          </View>
-        )}
-      </View>
-      <View style={styles.textContainer}>
-        <Text style={styles.title} numberOfLines={2}>
-          {item.name}
-        </Text>
-        <View style={styles.bottomRow}>
-          <Text style={styles.price}>₹{item.price}</Text>
-          <View style={styles.ratingContainer}>
-            <Text style={styles.star}>★</Text>
-            <Text style={styles.rating}>{item.rating}</Text>
+    <Link href={`/${product.id}`} asChild>
+      <TouchableOpacity style={styles.container} activeOpacity={0.85}>
+        <View style={styles.imgView}>
+          <Image
+            source={{ uri: product.image || defaultImage }}
+            style={styles.image}
+          />
+          {product.discount && (
+            <View style={styles.discountBadge}>
+              <Text style={styles.discountText}>{product.discount}% OFF</Text>
+            </View>
+          )}
+        </View>
+        <View style={styles.textContainer}>
+          <Text style={styles.title} numberOfLines={2}>
+            {product.name}
+          </Text>
+          <View style={styles.bottomRow}>
+            <Text style={styles.price}>₹{product.price}</Text>
+            <View style={styles.ratingContainer}>
+              <Text style={styles.star}>★</Text>
+              <Text style={styles.rating}>{product.rating}</Text>
+            </View>
           </View>
         </View>
-      </View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </Link>
   );
 };
 
@@ -103,6 +106,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
     color: "#27ae60", // premium green
+    // fontFamily: "Spacemono",
   },
   ratingContainer: {
     flexDirection: "row",
