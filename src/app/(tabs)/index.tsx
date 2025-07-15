@@ -1,10 +1,10 @@
 import { ActivityIndicator, FlatList, StyleSheet } from "react-native";
-import { Text, View } from "@/components/Themed";
+import { View } from "@/components/Themed";
 import products from "../../../assets/data/products";
 import ProductItemList from "@/components/ProductItemList";
 
 export default function TabOneScreen() {
-  if (!products) {
+  if (!products || products.length === 0) {
     return <ActivityIndicator size="large" />;
   }
 
@@ -13,7 +13,11 @@ export default function TabOneScreen() {
       <FlatList
         numColumns={2}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ gap: 10 }}
+        contentContainerStyle={{
+          gap: 10,
+          paddingVertical: 8,
+        }}
+        keyExtractor={(item) => item.id.toString()}
         data={products}
         renderItem={({ item }) => <ProductItemList item={item} />}
       />
@@ -24,6 +28,7 @@ export default function TabOneScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#FFF8F0",
   },
   title: {
     fontSize: 20,
