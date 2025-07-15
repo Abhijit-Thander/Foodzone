@@ -8,10 +8,11 @@ import {
   Dimensions,
   Pressable,
 } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import products from "@assets/data/products";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { PizzaSize } from "@/types";
 
 const { width } = Dimensions.get("window");
 
@@ -19,6 +20,10 @@ export default function ProductDetails() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const product = products.find((p) => p.id === Number(id));
+
+  const PizzaSize = ["S", "M", "L", "XL"];
+
+  const [pizzasize, setPizzasize] = useState<PizzaSize[]>(["M"]);
 
   if (!product) {
     return (
@@ -44,8 +49,7 @@ export default function ProductDetails() {
                   <FontAwesome
                     name="opencart"
                     size={25}
-                    // color={Colors[colorScheme ?? "light"].text}
-                    style={{ marginRight: 5, opacity: pressed ? 0.5 : 1 }}
+                    style={{ marginRight: 10, opacity: pressed ? 0.5 : 1 }}
                   />
                 )}
               </Pressable>
@@ -53,13 +57,21 @@ export default function ProductDetails() {
           ),
         }}
       />
+
       <ScrollView
         contentContainerStyle={styles.container}
         showsVerticalScrollIndicator={false}
       >
         {/* Product Image */}
         <View style={styles.imageContainer}>
-          <Image source={{ uri: product.image }} style={styles.image} />
+          {product.image ? (
+            <Image source={{ uri: product.image }} style={styles.image} />
+          ) : (
+            <View style={styles.noImage}>
+              <Text style={styles.noImageText}>No Image Available</Text>
+            </View>
+          )}
+
           {product.discount && (
             <View style={styles.discountBadge}>
               <Text style={styles.discountText}>{product.discount}% OFF</Text>
@@ -69,19 +81,58 @@ export default function ProductDetails() {
 
         {/* Product Info */}
         <View style={styles.infoContainer}>
-          <Text style={styles.name} numberOfLines={2}>
-            {product.name}
-          </Text>
+          <Text style={styles.name}>{product.name}</Text>
+
           <View style={styles.priceRow}>
             <Text style={styles.price}>₹{product.price}</Text>
+
             <View style={styles.ratingRow}>
               <Ionicons name="star" size={18} color="#f5a623" />
               <Text style={styles.rating}>{product.rating}</Text>
             </View>
           </View>
+
           <Text style={styles.description}>{product.description}</Text>
+
+          <Text style={styles.sizeLabel}>Select Size:</Text>
+
+          <View style={styles.sizeRow}>
+            {PizzaSize.map((size) => (
+              <View key={size} style={styles.sizeBox}>
+                <Text style={styles.sizeText}>{size}</Text>
+              </View>
+            ))}
+          </View>
+
+          <View style={styles.extraInfo}>
+            <Text
+              style={[
+                styles.extraLabel,
+                { color: product.isVeg ? "#168b1e" : "#ed4b4b" },
+              ]}
+            >
+              {product.isVeg ? "Vegetarian" : "Non-Vegetarian"}
+            </Text>
+            <Text style={styles.extraText}>
+              Restaurant: {product.restaurantName}
+            </Text>
+            <Text style={styles.extraText}>
+              Delivery Time: {product.deliveryTime} mins
+            </Text>
+          </View>
         </View>
       </ScrollView>
+
+      {/* ✅ Add to Cart Button */}
+      <TouchableOpacity
+        style={styles.addToCartBtn}
+        onPress={() => {
+          console.log(`Added ${product.name} to cart!`);
+          // Later: add to your cart state here
+        }}
+      >
+        <Text style={styles.addToCartText}>Add to Cart</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -94,20 +145,6 @@ const styles = StyleSheet.create({
   container: {
     paddingBottom: 40,
   },
-  backIcon: {
-    position: "absolute",
-    top: 50,
-    left: 20,
-    zIndex: 10,
-    backgroundColor: "#fff",
-    padding: 8,
-    borderRadius: 50,
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 3,
-  },
   imageContainer: {
     width: width,
     height: 350,
@@ -115,11 +152,23 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 30,
     overflow: "hidden",
     backgroundColor: "#ddd",
+    justifyContent: "center",
+    alignItems: "center",
   },
   image: {
     width: "100%",
     height: "100%",
     resizeMode: "cover",
+  },
+  noImage: {
+    width: "100%",
+    height: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  noImageText: {
+    color: "#555",
+    fontSize: 16,
   },
   discountBadge: {
     position: "absolute",
@@ -158,7 +207,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 16,
+    marginBottom: 12,
   },
   price: {
     fontSize: 24,
@@ -175,10 +224,54 @@ const styles = StyleSheet.create({
     marginLeft: 4,
     color: "#333",
   },
+  sizeRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    gap: 12,
+    marginTop: 10,
+  },
+  sizeLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#333",
+  },
+
+  sizeBox: {
+    borderWidth: 1,
+    borderColor: "#f5a623",
+    borderRadius: 999, // big number makes it fully round
+    width: 50,
+    height: 50,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "#fff",
+    marginBottom: 10,
+  },
+  sizeText: {
+    fontSize: 16,
+    color: "#333",
+    fontWeight: "bold",
+  },
   description: {
     fontSize: 16,
     lineHeight: 24,
     color: "#555",
+    marginBottom: 16,
+  },
+  extraInfo: {
+    marginTop: 8,
+  },
+  extraLabel: {
+    fontSize: 16,
+    fontWeight: "600",
+    marginBottom: 4,
+    color: "#333",
+  },
+  extraText: {
+    fontSize: 14,
+    color: "#555",
+    marginBottom: 4,
+    fontWeight: "600",
   },
   center: {
     flex: 1,
@@ -203,6 +296,17 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     fontSize: 16,
   },
+  addToCartBtn: {
+    backgroundColor: "#14CF93",
+    paddingVertical: 14,
+    borderRadius: 30,
+    alignItems: "center",
+    marginVertical: 16,
+    marginHorizontal: 40,
+  },
+  addToCartText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
 });
-
-// export default ProductDetails;

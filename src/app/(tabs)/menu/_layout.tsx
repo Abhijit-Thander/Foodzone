@@ -19,7 +19,7 @@ const _layout = () => {
                   <FontAwesome
                     name="opencart"
                     size={25}
-                    // color={Colors[useColorScheme ?? "light"].text}
+                    color={"#000000"}
                     style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
                   />
                 )}
