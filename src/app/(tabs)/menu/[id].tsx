@@ -38,7 +38,7 @@ export default function ProductDetails() {
 
   const addToCart = () => {
     console.warn(`Added ${product.name} to cart & size is ${selectedSize}!`);
-    router.push("/modal");
+    router.push("/cart");
   };
 
   return (
@@ -47,7 +47,7 @@ export default function ProductDetails() {
         options={{
           title: "Details",
           headerRight: () => (
-            <Link href="/modal" asChild>
+            <Link href="/cart" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome

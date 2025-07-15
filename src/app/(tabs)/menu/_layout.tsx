@@ -13,7 +13,7 @@ const _layout = () => {
         options={{
           title: "Menu",
           headerRight: () => (
-            <Link href="/modal" asChild>
+            <Link href="/cart" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome
