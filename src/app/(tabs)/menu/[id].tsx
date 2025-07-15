@@ -35,25 +35,23 @@ export default function ProductDetails() {
   return (
     <View style={styles.page}>
       <Stack.Screen
-        options={
-          {
-            // title: product.name,
-            // headerRight: () => (
-            //   <Link href="/modal" asChild>
-            //     <Pressable>
-            //       {({ pressed }) => (
-            //         <FontAwesome
-            //           name="opencart"
-            //           size={25}
-            //           // color={Colors[colorScheme ?? "light"].text}
-            //           style={{ marginRight: 5, opacity: pressed ? 0.5 : 1 }}
-            //         />
-            //       )}
-            //     </Pressable>
-            //   </Link>
-            // ),
-          }
-        }
+        options={{
+          title: "Details",
+          headerRight: () => (
+            <Link href="/modal" asChild>
+              <Pressable>
+                {({ pressed }) => (
+                  <FontAwesome
+                    name="opencart"
+                    size={25}
+                    // color={Colors[colorScheme ?? "light"].text}
+                    style={{ marginRight: 5, opacity: pressed ? 0.5 : 1 }}
+                  />
+                )}
+              </Pressable>
+            </Link>
+          ),
+        }}
       />
       <ScrollView
         contentContainerStyle={styles.container}
