@@ -12,18 +12,17 @@ import React, { useState } from "react";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import products from "@assets/data/products";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import { PizzaSize } from "@/types";
 
 const { width } = Dimensions.get("window");
+
+const ItemSize = ["S", "M", "L", "XL"];
 
 export default function ProductDetails() {
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const product = products.find((p) => p.id === Number(id));
 
-  const PizzaSize = ["S", "M", "L", "XL"];
-
-  const [pizzasize, setPizzasize] = useState<PizzaSize[]>(["M"]);
+  const [selectedSize, setSelectedsize] = useState("M");
 
   if (!product) {
     return (
@@ -36,6 +35,11 @@ export default function ProductDetails() {
       </View>
     );
   }
+
+  const addToCart = () => {
+    console.warn(`Added ${product.name} to cart & size is ${selectedSize}!`);
+    router.push("/modal");
+  };
 
   return (
     <View style={styles.page}>
@@ -97,10 +101,24 @@ export default function ProductDetails() {
           <Text style={styles.sizeLabel}>Select Size:</Text>
 
           <View style={styles.sizeRow}>
-            {PizzaSize.map((size) => (
-              <View key={size} style={styles.sizeBox}>
-                <Text style={styles.sizeText}>{size}</Text>
-              </View>
+            {ItemSize.map((size) => (
+              <Pressable
+                onPress={() => setSelectedsize(size)}
+                key={size}
+                style={[
+                  styles.sizeBox,
+                  selectedSize === size && styles.sizeBoxSelected,
+                ]}
+              >
+                <Text
+                  style={[
+                    styles.sizeText,
+                    selectedSize === size && styles.sizeTextSelected,
+                  ]}
+                >
+                  {size}
+                </Text>
+              </Pressable>
             ))}
           </View>
 
@@ -124,13 +142,7 @@ export default function ProductDetails() {
       </ScrollView>
 
       {/* ✅ Add to Cart Button */}
-      <TouchableOpacity
-        style={styles.addToCartBtn}
-        onPress={() => {
-          console.log(`Added ${product.name} to cart!`);
-          // Later: add to your cart state here
-        }}
-      >
+      <TouchableOpacity style={styles.addToCartBtn} onPress={addToCart}>
         <Text style={styles.addToCartText}>Add to Cart</Text>
       </TouchableOpacity>
     </View>
@@ -230,6 +242,16 @@ const styles = StyleSheet.create({
     gap: 12,
     marginTop: 10,
   },
+  sizeBoxSelected: {
+    backgroundColor: "#14CF93",
+    borderColor: "#14CF93",
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  sizeTextSelected: {
+    color: "#fff",
+  },
   sizeLabel: {
     fontSize: 16,
     fontWeight: "600",
@@ -238,7 +260,7 @@ const styles = StyleSheet.create({
 
   sizeBox: {
     borderWidth: 1,
-    borderColor: "#f5a623",
+    borderColor: "#D1D5DB",
     borderRadius: 999, // big number makes it fully round
     width: 50,
     height: 50,
@@ -246,10 +268,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "#fff",
     marginBottom: 10,
+    elevation: 3,
   },
   sizeText: {
     fontSize: 16,
-    color: "#333",
+    color: "#656769",
     fontWeight: "bold",
   },
   description: {
