@@ -2,6 +2,9 @@ import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
 import { Product } from "@/types";
 
+const defaultImage =
+  "https://media.istockphoto.com/id/1366580759/vector/white-broken-plate-with-fork-and-knife.jpg?s=612x612&w=0&k=20&c=9mwXZPvfICESTumsuRZ0FJgSifBgDmzcvmGy854tTzI=";
+
 type ProductListItemProps = {
   item: Product;
 };
@@ -10,7 +13,10 @@ const ProductItemList = ({ item }: ProductListItemProps) => {
   return (
     <TouchableOpacity style={styles.container} activeOpacity={0.85}>
       <View style={styles.imgView}>
-        <Image source={{ uri: item.image || "" }} style={styles.image} />
+        <Image
+          source={{ uri: item.image || defaultImage }}
+          style={styles.image}
+        />
         {item.discount && (
           <View style={styles.discountBadge}>
             <Text style={styles.discountText}>{item.discount}% OFF</Text>
