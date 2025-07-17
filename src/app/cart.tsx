@@ -9,12 +9,12 @@ import { useCart } from "@/providers/CartProvider";
 import CartListItem from "@/components/CartListItem";
 
 export default function ModalScreen() {
-  const { items, addItem } = useCart();
+  const { items, total } = useCart();
 
-  const total = items.reduce(
-    (sum, item) => sum + item.product.price * item.quantity,
-    0
-  );
+  // const total = items.reduce(
+  //   (sum, item) => sum + item.product.price * item.quantity,
+  //   0
+  // );
 
   return (
     <View style={styles.container}>
