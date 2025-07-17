@@ -1,5 +1,4 @@
-import { ActivityIndicator, FlatList, StyleSheet } from "react-native";
-import { View } from "@/components/Themed";
+import { ActivityIndicator, FlatList, StyleSheet,View } from "react-native";
 import products from "@assets/data/products";
 import ProductItemList from "@/components/ProductItemList";
 

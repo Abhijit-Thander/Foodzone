@@ -1,5 +1,10 @@
-import { FlatList, StyleSheet, TouchableOpacity } from "react-native";
-import { Text, View } from "@/components/Themed";
+import {
+  FlatList,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  View,
+} from "react-native";
 import { useCart } from "@/providers/CartProvider";
 import CartListItem from "@/components/CartListItem";
 
@@ -35,7 +40,7 @@ export default function ModalScreen() {
           <View style={styles.checkoutBar}>
             <Text style={styles.totalText}>Total: ₹{total.toFixed(2)}</Text>
             <TouchableOpacity style={styles.checkoutButton}>
-              <Text style={styles.checkoutText}>Checkout</Text>
+              <Text style={styles.checkoutText}>Place Order</Text>
             </TouchableOpacity>
           </View>
         </>
