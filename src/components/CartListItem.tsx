@@ -1,4 +1,3 @@
-
 import { View, Text, StyleSheet, Image, Pressable } from "react-native";
 import React from "react";
 import Colors from "../constants/Colors";
@@ -11,7 +10,7 @@ type CartListItemProps = {
 };
 
 const CartListItem = ({ cartItem }: CartListItemProps) => {
-    const { updateQuantity } = useCart();
+  const { updateQuantity } = useCart();
 
   return (
     <View style={styles.container}>
@@ -29,19 +28,19 @@ const CartListItem = ({ cartItem }: CartListItemProps) => {
           <Text style={styles.price}>₹{cartItem.product.price.toFixed(2)}</Text>
           <View style={styles.quantitySelector}>
             <Pressable
-                onPress={() => updateQuantity(cartItem.id, -1)}
+              onPress={() => updateQuantity(cartItem.id, -1)}
               style={styles.qtyButton}
             >
-              <FontAwesome name="minus" size={14} color="#333" />
+              <FontAwesome name="minus" size={16} color="#e24242" />
             </Pressable>
 
             <Text style={styles.quantity}>{cartItem.quantity}</Text>
 
             <Pressable
-                onPress={() => updateQuantity(cartItem.id, 1)}
+              onPress={() => updateQuantity(cartItem.id, 1)}
               style={styles.qtyButton}
             >
-              <FontAwesome name="plus" size={14} color="#333" />
+              <FontAwesome name="plus" size={16} color="#10ec35" />
             </Pressable>
           </View>
         </View>
@@ -104,8 +103,8 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   qtyButton: {
-    backgroundColor: "#e0e0e0",
-    borderRadius: 15,
+    // backgroundColor: "#e0e0e0",
+    // borderRadius: 15,
     padding: 6,
     marginHorizontal: 4,
   },
