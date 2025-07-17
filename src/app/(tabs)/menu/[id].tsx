@@ -12,17 +12,20 @@ import React, { useState } from "react";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import products from "@assets/data/products";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { useCart } from "@/providers/CartProvider";
+import { PizzaSize } from "@/types";
 
 const { width } = Dimensions.get("window");
 
-const ItemSize = ["S", "M", "L", "XL"];
+const ItemSize: PizzaSize[] = ["S", "M", "L", "XL"];
 
 export default function ProductDetails() {
+  const { items, addItem } = useCart();
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const product = products.find((p) => p.id === Number(id));
 
-  const [selectedSize, setSelectedsize] = useState("M");
+  const [selectedSize, setSelectedsize] = useState<PizzaSize>("M");
 
   if (!product) {
     return (
@@ -37,7 +40,7 @@ export default function ProductDetails() {
   }
 
   const addToCart = () => {
-    console.warn(`Added ${product.name} to cart & size is ${selectedSize}!`);
+    addItem(product, selectedSize);
     router.push("/cart");
   };
 

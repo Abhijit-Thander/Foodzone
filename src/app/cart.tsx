@@ -3,12 +3,13 @@ import { Text, View } from "@/components/Themed";
 import { useCart } from "@/providers/CartProvider";
 
 export default function ModalScreen() {
-const { items } = useCart();
+const { items, addItem } = useCart();
 
   return <View style={styles.container}>
     <Text style={styles.title}>Cart</Text>
     <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
     <Text>Items: {items.length}</Text>
+    {/* <Text>{}</Text> */}
   </View>;
 }
 
