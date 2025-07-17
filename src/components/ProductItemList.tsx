@@ -2,6 +2,8 @@ import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React from "react";
 import { Product } from "@/types";
 import { Link } from "expo-router";
+import Toast from 'react-native-toast-message'; // 🔁 Add this import
+
 
 const defaultImage =
   "https://media.istockphoto.com/id/1366580759/vector/white-broken-plate-with-fork-and-knife.jpg?s=612x612&w=0&k=20&c=9mwXZPvfICESTumsuRZ0FJgSifBgDmzcvmGy854tTzI=";

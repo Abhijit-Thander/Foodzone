@@ -12,6 +12,7 @@ import React, { useState } from "react";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import products from "@assets/data/products";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import Toast from "react-native-toast-message"; // 🔁 Add this import
 import { useCart } from "@/providers/CartProvider";
 import { PizzaSize } from "@/types";
 
@@ -42,6 +43,14 @@ export default function ProductDetails() {
   const addToCart = () => {
     addItem(product, selectedSize);
     router.push("/cart");
+
+    Toast.show({
+      type: "success",
+      text1: "Added to Cart 🛒",
+      text2: `${product.name} has added successfully`,
+      position: "top",
+      visibilityTime: 1000,
+    });
   };
 
   return (
