@@ -14,26 +14,26 @@ const _layout = () => {
         headerStyle: {
           backgroundColor: Colors.light.tint,
         },
-        headerRight: () => (
-          <Link href="/cart" asChild>
-            <Pressable>
-              {({ pressed }) => (
-                <FontAwesome
-                  name="opencart"
-                  size={25}
-                  color={"#000000"}
-                  style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                />
-              )}
-            </Pressable>
-          </Link>
-        ),
       }}
     >
       <Stack.Screen
         name="index"
         options={{
           title: "Menu",
+          headerRight: () => (
+            <Link href="/" asChild>
+              <Pressable>
+                {({ pressed }) => (
+                  <FontAwesome
+                    name="plus-circle"
+                    size={23}
+                    color={"#ffffff"}
+                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
+                  />
+                )}
+              </Pressable>
+            </Link>
+          ),
         }}
       />
     </Stack>

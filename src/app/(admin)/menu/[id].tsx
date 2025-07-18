@@ -42,11 +42,11 @@ export default function ProductDetails() {
 
   const addToCart = () => {
     addItem(product, selectedSize);
-    router.push("/cart");
+    // router.push("/cart");
 
     Toast.show({
       type: "success",
-      text1: "Added to Cart 🛒",
+      text1: "Edited 🛒",
       text2: `${product.name} has added successfully`,
       position: "top",
       visibilityTime: 2000,
@@ -59,12 +59,13 @@ export default function ProductDetails() {
         options={{
           title: "Details",
           headerRight: () => (
-            <Link href="/cart" asChild>
+            <Link href="/" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome
-                    name="opencart"
-                    size={25}
+                    name="pencil"
+                    size={22}
+                    color={"#f3f3f3"}
                     style={{ marginRight: 10, opacity: pressed ? 0.5 : 1 }}
                   />
                 )}
@@ -110,30 +111,6 @@ export default function ProductDetails() {
 
           <Text style={styles.description}>{product.description}</Text>
 
-          <Text style={styles.sizeLabel}>Select Size:</Text>
-
-          <View style={styles.sizeRow}>
-            {ItemSize.map((size) => (
-              <Pressable
-                onPress={() => setSelectedsize(size)}
-                key={size}
-                style={[
-                  styles.sizeBox,
-                  selectedSize === size && styles.sizeBoxSelected,
-                ]}
-              >
-                <Text
-                  style={[
-                    styles.sizeText,
-                    selectedSize === size && styles.sizeTextSelected,
-                  ]}
-                >
-                  {size}
-                </Text>
-              </Pressable>
-            ))}
-          </View>
-
           <View style={styles.extraInfo}>
             <Text
               style={[
@@ -155,7 +132,7 @@ export default function ProductDetails() {
 
       {/* ✅ Add to Cart Button */}
       <TouchableOpacity style={styles.addToCartBtn} onPress={addToCart}>
-        <Text style={styles.addToCartText}>Add to Cart</Text>
+        <Text style={styles.addToCartText}>Update</Text>
       </TouchableOpacity>
     </View>
   );
