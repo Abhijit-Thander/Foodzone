@@ -21,7 +21,7 @@ const _layout = () => {
         options={{
           title: "Menu",
           headerRight: () => (
-            <Link href="/" asChild>
+            <Link href="/(admin)/menu/create" asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome
