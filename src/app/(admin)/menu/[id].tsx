@@ -21,7 +21,7 @@ const { width } = Dimensions.get("window");
 const ItemSize: PizzaSize[] = ["S", "M", "L", "XL"];
 
 export default function ProductDetails() {
-  const { items, addItem } = useCart();
+  const { addItem } = useCart();
   const router = useRouter();
   const { id } = useLocalSearchParams();
   const product = products.find((p) => p.id === Number(id));
@@ -49,7 +49,7 @@ export default function ProductDetails() {
       text1: "Added to Cart 🛒",
       text2: `${product.name} has added successfully`,
       position: "top",
-      visibilityTime: 1000,
+      visibilityTime: 2000,
     });
   };
 

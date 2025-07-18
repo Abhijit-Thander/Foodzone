@@ -40,7 +40,7 @@ const CartListItem = ({ cartItem }: CartListItemProps) => {
               onPress={() => updateQuantity(cartItem.id, 1)}
               style={styles.qtyButton}
             >
-              <FontAwesome name="plus" size={16} color="#10ec35" />
+              <FontAwesome name="plus" size={16} color="#14cf93" />
             </Pressable>
           </View>
         </View>
@@ -81,8 +81,9 @@ const styles = StyleSheet.create({
   },
   sizeText: {
     fontSize: 14,
-    color: "#666",
+    color: "#868484",
     marginVertical: 4,
+    fontWeight: "600",
   },
   bottomRow: {
     flexDirection: "row",
@@ -103,8 +104,6 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
   },
   qtyButton: {
-    // backgroundColor: "#e0e0e0",
-    // borderRadius: 15,
     padding: 6,
     marginHorizontal: 4,
   },

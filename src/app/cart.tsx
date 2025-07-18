@@ -7,17 +7,30 @@ import {
 } from "react-native";
 import { useCart } from "@/providers/CartProvider";
 import CartListItem from "@/components/CartListItem";
+import { Stack } from "expo-router";
+import Colors from "@/constants/Colors";
+import Toast from "react-native-toast-message"; //
 
-export default function ModalScreen() {
+export default function CartScreen() {
   const { items, total } = useCart();
 
-  // const total = items.reduce(
-  //   (sum, item) => sum + item.product.price * item.quantity,
-  //   0
-  // );
-
+  const OnOrderPlace = () => {
+    Toast.show({
+      type: "success",
+      text1: "Order Placed Successfully",
+    });
+  };
   return (
     <View style={styles.container}>
+      <Stack.Screen
+        options={{
+          title: "Cart 🧺",
+          presentation: "modal",
+          headerStyle: {
+            backgroundColor: Colors.light.tint,
+          },
+        }}
+      />
       <Text style={styles.heading}>🧺 My Basket</Text>
 
       {items.length === 0 ? (
@@ -39,7 +52,10 @@ export default function ModalScreen() {
 
           <View style={styles.checkoutBar}>
             <Text style={styles.totalText}>Total: ₹{total.toFixed(2)}</Text>
-            <TouchableOpacity style={styles.checkoutButton}>
+            <TouchableOpacity
+              style={styles.checkoutButton}
+              onPress={OnOrderPlace}
+            >
               <Text style={styles.checkoutText}>Place Order</Text>
             </TouchableOpacity>
           </View>
