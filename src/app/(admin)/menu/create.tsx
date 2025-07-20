@@ -12,6 +12,7 @@ import {
 import React, { useState } from "react";
 import Colors from "@/constants/Colors";
 import * as ImagePicker from "expo-image-picker";
+import { Stack } from "expo-router";
 
 const AdminAddItem = () => {
   const [image, setImage] = useState<string | null>(null);
@@ -91,6 +92,7 @@ const AdminAddItem = () => {
 
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+      <Stack.Screen options={{ title: "Create Dish" }} />
       <Text style={styles.heading}>Create New Product</Text>
 
       <Pressable style={styles.imagePicker}>
