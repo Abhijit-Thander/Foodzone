@@ -19,6 +19,16 @@ const Home = () => {
           <Text style={styles.buttonText}>👤 User</Text>
         </Pressable>
       </Link>
+      <Link href="/Sign-in" asChild>
+        <Pressable style={styles.button}>
+          <Text style={styles.buttonText}>Sign In</Text>
+        </Pressable>
+      </Link>
+      <Link href="/Sign-up" asChild>
+        <Pressable style={styles.button}>
+          <Text style={styles.buttonText}>Sign Up</Text>
+        </Pressable>
+      </Link>
     </View>
   );
 };
