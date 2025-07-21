@@ -7,6 +7,7 @@ import {
   ScrollView,
   Dimensions,
   Pressable,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
@@ -40,14 +41,27 @@ export default function ProductDetails() {
     );
   }
 
-  const addToCart = () => {
-    addItem(product, selectedSize);
+    const onConfirmDelete = () => {
+      Alert.alert("Delete Dish", "Are you sure you want to delete this dish?", [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          onPress: onDelete,
+          style: "destructive",
+        },
+      ]);
+    };
+  const onDelete = () => {
+    // addItem(product, selectedSize);
     // router.push("/cart");
 
     Toast.show({
       type: "success",
-      text1: "Edited 🛒",
-      text2: `${product.name} has added successfully`,
+      text1: "Deleted Dish 🍽️",
+      text2: `${product.name} has deleted successfully`,
       position: "top",
       visibilityTime: 2000,
     });
@@ -59,7 +73,7 @@ export default function ProductDetails() {
         options={{
           title: "Details",
           headerRight: () => (
-            <Link href="/" asChild>
+            <Link href={`/(admin)/menu/create?id=${id}`} asChild>
               <Pressable>
                 {({ pressed }) => (
                   <FontAwesome
@@ -131,8 +145,8 @@ export default function ProductDetails() {
       </ScrollView>
 
       {/* ✅ Add to Cart Button */}
-      <TouchableOpacity style={styles.addToCartBtn} onPress={addToCart}>
-        <Text style={styles.addToCartText}>Update</Text>
+      <TouchableOpacity style={styles.deleteBtn} onPress={onConfirmDelete}>
+        <Text style={styles.deleteText}>Delete Dish</Text>
       </TouchableOpacity>
     </View>
   );
@@ -308,16 +322,16 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     fontSize: 16,
   },
-  addToCartBtn: {
-    backgroundColor: "#14CF93",
+  deleteBtn: {
+    backgroundColor: "#ec6645",
     paddingVertical: 14,
     borderRadius: 30,
     alignItems: "center",
     marginVertical: 16,
     marginHorizontal: 40,
   },
-  addToCartText: {
-    color: "#fff",
+  deleteText: {
+    color: "#ffffff",
     fontSize: 16,
     fontWeight: "bold",
   },

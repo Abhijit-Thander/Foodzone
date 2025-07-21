@@ -12,7 +12,8 @@ import {
 import React, { useState } from "react";
 import Colors from "@/constants/Colors";
 import * as ImagePicker from "expo-image-picker";
-import { Stack } from "expo-router";
+import { Stack, useLocalSearchParams } from "expo-router";
+import Toast from "react-native-toast-message";
 
 const AdminAddItem = () => {
   const [image, setImage] = useState<string | null>(null);
@@ -25,6 +26,9 @@ const AdminAddItem = () => {
   const [deliveryTime, setDeliveryTime] = useState("");
   const [discount, setDiscount] = useState("");
 
+  const { id } = useLocalSearchParams();
+  const isUpdating = !!id;
+
   const [errors, setErrors] = useState<{
     name?: string;
     price?: string;
@@ -32,6 +36,7 @@ const AdminAddItem = () => {
     description?: string;
   }>({});
 
+  // Image picker expo
   const pickImage = async () => {
     // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -48,7 +53,17 @@ const AdminAddItem = () => {
     }
   };
 
+  // Submit handler
   const handleSubmit = () => {
+    if (isUpdating) {
+      onUpdate();
+    } else {
+      onCreate();
+    }
+  };
+
+  // Create item handler
+  const onCreate = () => {
     let newErrors: typeof errors = {};
     if (!name.trim()) newErrors.name = "Name is required";
     if (!price.trim()) newErrors.price = "Price is required";
@@ -90,9 +105,48 @@ const AdminAddItem = () => {
     setErrors({});
   };
 
+  // Update item handler
+  const onUpdate = () => {
+    Toast.show({
+      type: "success",
+      text1: "Updated Dish 🍽️",
+      position: "top",
+      visibilityTime: 2000,
+    });
+
+    let newErrors: typeof errors = {};
+    if (!name.trim()) newErrors.name = "Name is required";
+    if (!price.trim()) newErrors.price = "Price is required";
+    if (!restaurantName.trim())
+      newErrors.restaurantName = "Restaurant name is required";
+    if (!description.trim()) newErrors.description = "Description is required";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
+    }
+
+    // reset form
+    setName("");
+    setPrice("");
+    setDescription("");
+    setRating("");
+    setIsVeg(false);
+    setRestaurantName("");
+    setDeliveryTime("");
+    setDiscount("");
+    setImage(null);
+    setErrors({});
+
+    console.log("🟢 New Item:");
+    Alert.alert("Success", "Item updated successfully!");
+  };
+
   return (
     <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-      <Stack.Screen options={{ title: "Create Dish" }} />
+      <Stack.Screen
+        options={{ title: isUpdating ? "Edit Dish" : "Create Dish" }}
+      />
       <Text style={styles.heading}>Create New Product</Text>
 
       <Pressable style={styles.imagePicker}>
@@ -208,7 +262,9 @@ const AdminAddItem = () => {
       />
 
       <Pressable style={styles.submitButton} onPress={handleSubmit}>
-        <Text style={styles.submitText}>Create Product</Text>
+        <Text style={styles.submitText}>
+          {isUpdating ? "Update Product" : "Create Product"}
+        </Text>
       </Pressable>
     </ScrollView>
   );
