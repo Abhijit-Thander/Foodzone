@@ -1,8 +1,32 @@
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Pressable,
+  ActivityIndicator,
+} from "react-native";
 import React from "react";
-import { Link, router } from "expo-router";
+import { Link, Redirect, router } from "expo-router";
+import { useAuth } from "@/providers/AuthProvider";
+import { supabase } from "@/lib/supabase";
 
 const Home = () => {
+  const { session, loading, isAdmin } = useAuth();
+
+  if (loading) {
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
+  }
+  if (!session) {
+    return <Redirect href="/Sign-in" />;
+  }
+  if (!isAdmin) {
+    return <Redirect href={"/(user)"} />;
+  }
+
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Choose User Type</Text>
@@ -19,7 +43,7 @@ const Home = () => {
           <Text style={styles.buttonText}>👤 User</Text>
         </Pressable>
       </Link>
-      <Link href="/Sign-in" asChild>
+      {/* <Link href="/Sign-in" asChild>
         <Pressable style={styles.button}>
           <Text style={styles.buttonText}>Sign In</Text>
         </Pressable>
@@ -27,6 +51,14 @@ const Home = () => {
       <Link href="/Sign-up" asChild>
         <Pressable style={styles.button}>
           <Text style={styles.buttonText}>Sign Up</Text>
+        </Pressable>
+      </Link> */}
+      <Link href="/Sign-up" asChild>
+        <Pressable
+          style={styles.button}
+          onPress={() => supabase.auth.signOut()}
+        >
+          <Text style={styles.buttonText}>Sign Out</Text>
         </Pressable>
       </Link>
     </View>
