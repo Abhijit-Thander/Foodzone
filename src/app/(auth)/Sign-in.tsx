@@ -14,11 +14,27 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { supabase } from "@/lib/supabase";
 
 export default function SigninScreen() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function SignUpWithEmail() {
+    setIsLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      Alert.alert("Error", error.message);
+    }
+
+    setIsLoading(false);
+  }
 
   const handleSignin = () => {
     if (!email || !password) {
@@ -26,8 +42,9 @@ export default function SigninScreen() {
       return;
     }
 
+    SignUpWithEmail();
     // Add your login logic here
-    Alert.alert("Success", "Logged in successfully!");
+    // Alert.alert("Success", "Logged in successfully!");
   };
 
   return (
@@ -72,7 +89,7 @@ export default function SigninScreen() {
           </View>
 
           <TouchableOpacity onPress={handleSignin} style={styles.button}>
-            <Text style={styles.buttonText}>Sign In</Text>
+            <Text style={styles.buttonText}>{isLoading ? "Signing In..." : "Sign In"}</Text>
           </TouchableOpacity>
           <Text style={styles.linkText}>
             Don't have an account?{" "}

@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
+import { supabase } from "../../lib/supabase";
 
 export default function SignupScreen() {
   const [email, setEmail] = useState("");
@@ -21,6 +22,18 @@ export default function SignupScreen() {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  async function SignUpWithEmail() {
+    setIsLoading(true);
+    const { error } = await supabase.auth.signUp({ email, password });
+
+    if (error) {
+      Alert.alert("Error", error.message);
+    }
+
+    setIsLoading(false);
+  }
 
   const handleSignup = () => {
     if (!email || !password || !confirmPassword) {
@@ -33,8 +46,9 @@ export default function SignupScreen() {
       return;
     }
 
+    SignUpWithEmail();
     // Signup logic here (API call, Firebase, Supabase, etc.)
-    Alert.alert("Success", "Account created!");
+    // Alert.alert("Success", "Account created!");
   };
 
   return (
@@ -99,7 +113,9 @@ export default function SignupScreen() {
           </View>
 
           <TouchableOpacity onPress={handleSignup} style={styles.button}>
-            <Text style={styles.buttonText}>Sign Up</Text>
+            <Text style={styles.buttonText}>
+              {isLoading ? "Creating..." : "Create Account"}
+            </Text>
           </TouchableOpacity>
           <Text style={styles.linkText}>
             Already have an account?{" "}
