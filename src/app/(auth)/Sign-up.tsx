@@ -23,6 +23,11 @@ export default function SignupScreen() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState<{
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
+  }>({});
 
   async function SignUpWithEmail() {
     setIsLoading(true);
@@ -35,14 +40,13 @@ export default function SignupScreen() {
     setIsLoading(false);
   }
 
-  const handleSignup = () => {
-    if (!email || !password || !confirmPassword) {
-      Alert.alert("Error", "All fields are required");
-      return;
-    }
+  const onSignin = () => {
+    let newErrors: typeof errors = {};
+    if (!email.trim()) newErrors.email = "Email is required";
+    if (!password.trim()) newErrors.password = "Password is required";
 
-    if (password !== confirmPassword) {
-      Alert.alert("Error", "Passwords do not match");
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
       return;
     }
 
@@ -50,6 +54,21 @@ export default function SignupScreen() {
     // Signup logic here (API call, Firebase, Supabase, etc.)
     // Alert.alert("Success", "Account created!");
   };
+  // const handleSignup = () => {
+  //   if (!email || !password || !confirmPassword) {
+  //     Alert.alert("Error", "All fields are required");
+  //     return;
+  //   }
+
+  //   if (password !== confirmPassword) {
+  //     Alert.alert("Error", "Passwords do not match");
+  //     return;
+  //   }
+
+  //   SignUpWithEmail();
+  //   // Signup logic here (API call, Firebase, Supabase, etc.)
+  //   // Alert.alert("Success", "Account created!");
+  // };
 
   return (
     <KeyboardAvoidingView
@@ -66,8 +85,12 @@ export default function SignupScreen() {
           <TextInput
             placeholder="Email"
             value={email}
-            onChangeText={setEmail}
-            style={styles.input}
+            // onChangeText={setEmail}
+            onChangeText={(text) => {
+              setEmail(text);
+              setErrors((prev) => ({ ...prev, name: undefined }));
+            }}
+            style={[styles.input, errors.email && styles.errorInput]}
             keyboardType="email-address"
             autoCapitalize="none"
           />
@@ -112,7 +135,7 @@ export default function SignupScreen() {
             </TouchableOpacity>
           </View>
 
-          <TouchableOpacity onPress={handleSignup} style={styles.button}>
+          <TouchableOpacity onPress={onSignin} style={styles.button}>
             <Text style={styles.buttonText}>
               {isLoading ? "Creating..." : "Create Account"}
             </Text>
@@ -161,6 +184,9 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 15,
     paddingHorizontal: 10,
+  },
+  errorInput: {
+    borderColor: "red",
   },
   passwordInput: {
     flex: 1,
