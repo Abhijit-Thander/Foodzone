@@ -89,7 +89,9 @@ export default function SigninScreen() {
           </View>
 
           <TouchableOpacity onPress={handleSignin} style={styles.button}>
-            <Text style={styles.buttonText}>{isLoading ? "Signing In..." : "Sign In"}</Text>
+            <Text style={styles.buttonText}>
+              {isLoading ? "Signing In..." : "Sign In"}
+            </Text>
           </TouchableOpacity>
           <Text style={styles.linkText}>
             Don't have an account?{" "}
