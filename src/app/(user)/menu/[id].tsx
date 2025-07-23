@@ -10,8 +10,8 @@ import {
   ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
-import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { FontAwesome, Ionicons } from "@expo/vector-icons";
+import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message"; // 🔁 Add this import
 import { useCart } from "@/providers/CartProvider";
 import { PizzaSize } from "@/types";
@@ -38,18 +38,6 @@ export default function ProductDetails() {
     return <Text>Error: {error.message}</Text>;
   }
 
-  // if (!product) {
-  //   return (
-  //     <View style={styles.center}>
-  //       <Text style={styles.notFound}>Product not found!</Text>
-  //       <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-  //         <Ionicons name="arrow-back" size={20} color="#fff" />
-  //         <Text style={styles.backText}>Go Back</Text>
-  //       </TouchableOpacity>
-  //     </View>
-  //   );
-  // }
-
   const addToCart = () => {
     addItem(product, selectedSize);
     router.push("/cart");
@@ -68,19 +56,19 @@ export default function ProductDetails() {
       <Stack.Screen
         options={{
           title: "Details",
-          headerRight: () => (
-            <Link href="/cart" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="opencart"
-                    size={25}
-                    style={{ marginRight: 10, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
+          // headerRight: () => (
+          //   <Link href="/cart" asChild>
+          //     <Pressable>
+          //       {({ pressed }) => (
+          //         <FontAwesome
+          //           name="opencart"
+          //           size={25}
+          //           style={{ marginRight: 10, opacity: pressed ? 0.5 : 1 }}
+          //         />
+          //       )}
+          //     </Pressable>
+          //   </Link>
+          // ),
         }}
       />
 

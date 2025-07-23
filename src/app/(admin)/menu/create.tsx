@@ -12,8 +12,9 @@ import {
 import React, { useState } from "react";
 import Colors from "@/constants/Colors";
 import * as ImagePicker from "expo-image-picker";
-import { Stack, useLocalSearchParams } from "expo-router";
+import { router, Stack, useLocalSearchParams } from "expo-router";
 import Toast from "react-native-toast-message";
+import { useInsertProduct } from "@/api/products";
 
 const AdminAddItem = () => {
   const [image, setImage] = useState<string | null>(null);
@@ -22,19 +23,20 @@ const AdminAddItem = () => {
   const [description, setDescription] = useState("");
   const [rating, setRating] = useState("");
   const [isVeg, setIsVeg] = useState(false);
-  const [restaurantName, setRestaurantName] = useState("");
-  const [deliveryTime, setDeliveryTime] = useState("");
+  const [restaurantname, setRestaurantName] = useState("");
+  const [deliverytime, setDeliveryTime] = useState("");
   const [discount, setDiscount] = useState("");
 
   const { id } = useLocalSearchParams();
   const isUpdating = !!id;
-
   const [errors, setErrors] = useState<{
     name?: string;
     price?: string;
     restaurantName?: string;
     description?: string;
   }>({});
+
+  const { mutate: insertProduct } = useInsertProduct();
 
   // Image picker expo
   const pickImage = async () => {
@@ -46,7 +48,7 @@ const AdminAddItem = () => {
       quality: 1,
     });
 
-    console.log(result);
+   
 
     if (!result.canceled) {
       setImage(result.assets[0].uri);
@@ -67,7 +69,7 @@ const AdminAddItem = () => {
     let newErrors: typeof errors = {};
     if (!name.trim()) newErrors.name = "Name is required";
     if (!price.trim()) newErrors.price = "Price is required";
-    if (!restaurantName.trim())
+    if (!restaurantname.trim())
       newErrors.restaurantName = "Restaurant name is required";
     if (!description.trim()) newErrors.description = "Description is required";
 
@@ -76,21 +78,40 @@ const AdminAddItem = () => {
       return;
     }
 
-    const newItem = {
-      id: Date.now(),
-      image,
-      name,
-      price: Number(price),
-      description,
-      rating: Number(rating),
-      isVeg,
-      restaurantName,
-      deliveryTime: Number(deliveryTime),
-      discount: discount ? Number(discount) : undefined,
-    };
-
-    console.log("🟢 New Item:", newItem);
-    Alert.alert("Success", "Item created successfully!");
+    // insert product logic using react query
+    insertProduct(
+      {
+        name,
+        image,
+        price: parseFloat(price),
+        description,
+        rating,
+        isVeg,
+        restaurantname,
+        deliverytime,
+        discount: parseFloat(discount),
+      },
+      {
+        onSuccess: () => {
+          Toast.show({
+            type: "success",
+            text1: "New Dish 🍽️",
+            position: "top",
+            visibilityTime: 2000,
+          });
+          router.back();
+        },
+        onError: (error: any) => {
+          Toast.show({
+            type: "error",
+            text1: "Error",
+            text2: error.message,
+            position: "top",
+            visibilityTime: 2000,
+          });
+        },
+      }
+    );
 
     // Reset form
     setName("");
@@ -117,7 +138,7 @@ const AdminAddItem = () => {
     let newErrors: typeof errors = {};
     if (!name.trim()) newErrors.name = "Name is required";
     if (!price.trim()) newErrors.price = "Price is required";
-    if (!restaurantName.trim())
+    if (!restaurantname.trim())
       newErrors.restaurantName = "Restaurant name is required";
     if (!description.trim()) newErrors.description = "Description is required";
 
@@ -233,7 +254,7 @@ const AdminAddItem = () => {
         placeholder="e.g. Swiggy Tandoor"
         placeholderTextColor={"#0000004f"}
         style={[styles.input, errors.restaurantName && styles.errorInput]}
-        value={restaurantName}
+        value={restaurantname}
         // onChangeText={setRestaurantName}
         onChangeText={(text) => {
           setRestaurantName(text);
@@ -247,7 +268,7 @@ const AdminAddItem = () => {
         placeholderTextColor={"#0000004f"}
         style={styles.input}
         keyboardType="number-pad"
-        value={deliveryTime}
+        value={deliverytime}
         onChangeText={setDeliveryTime}
       />
 

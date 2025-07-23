@@ -145,10 +145,10 @@ export default function ProductDetails() {
               {product.isVeg ? "Vegetarian" : "Non-Vegetarian"}
             </Text>
             <Text style={styles.extraText}>
-              Restaurant: {product.restaurantName}
+              Restaurant: {product.restaurantname}
             </Text>
             <Text style={styles.extraText}>
-              Delivery Time: {product.deliveryTime} mins
+              Delivery Time: {product.deliverytime} mins
             </Text>
           </View>
         </View>
