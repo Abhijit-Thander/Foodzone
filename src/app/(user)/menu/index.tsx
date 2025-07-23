@@ -26,9 +26,9 @@ export default function TabOneScreen() {
     return <ActivityIndicator size="large" />;
   }
 
-  if (error) {
-    return <Text>Error: {error.message}</Text>;
-  }
+  // if (error) {
+  //   return <Text>Error: {error.message}</Text>;
+  // }
 
   return (
     <View style={styles.container}>
