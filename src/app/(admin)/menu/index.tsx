@@ -1,12 +1,24 @@
-import { ActivityIndicator, FlatList, StyleSheet,View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import products from "@assets/data/products";
 import ProductItemList from "@/components/ProductItemList";
+import { useProductList } from "@/api/products";
 
 export default function TabOneScreen() {
-  if (!products || products.length === 0) {
+  const { data: products, isLoading, error } = useProductList();
+
+  if (isLoading) {
     return <ActivityIndicator size="large" />;
   }
 
+  if (error) {
+    return <Text>Error: {error.message}</Text>;
+  }
   return (
     <View style={styles.container}>
       <FlatList

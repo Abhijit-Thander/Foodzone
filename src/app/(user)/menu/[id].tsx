@@ -7,38 +7,48 @@ import {
   ScrollView,
   Dimensions,
   Pressable,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
-import products from "@assets/data/products";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message"; // 🔁 Add this import
 import { useCart } from "@/providers/CartProvider";
 import { PizzaSize } from "@/types";
+import { useProduct } from "@/api/products";
+const defaultImage =
+  "https://media.istockphoto.com/id/1366580759/vector/white-broken-plate-with-fork-and-knife.jpg?s=612x612&w=0&k=20&c=9mwXZPvfICESTumsuRZ0FJgSifBgDmzcvmGy854tTzI=";
 
 const { width } = Dimensions.get("window");
 
 const ItemSize: PizzaSize[] = ["S", "M", "L", "XL"];
 
 export default function ProductDetails() {
-  const { addItem } = useCart();
   const router = useRouter();
+  const { addItem } = useCart();
   const { id } = useLocalSearchParams();
-  const product = products.find((p) => p.id === Number(id));
-
+  const { data: product, error, isLoading } = useProduct(Number(id));
   const [selectedSize, setSelectedsize] = useState<PizzaSize>("M");
 
-  if (!product) {
-    return (
-      <View style={styles.center}>
-        <Text style={styles.notFound}>Product not found!</Text>
-        <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-          <Ionicons name="arrow-back" size={20} color="#fff" />
-          <Text style={styles.backText}>Go Back</Text>
-        </TouchableOpacity>
-      </View>
-    );
+  if (isLoading) {
+    return <ActivityIndicator size="large" />;
   }
+
+  if (error) {
+    return <Text>Error: {error.message}</Text>;
+  }
+
+  // if (!product) {
+  //   return (
+  //     <View style={styles.center}>
+  //       <Text style={styles.notFound}>Product not found!</Text>
+  //       <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
+  //         <Ionicons name="arrow-back" size={20} color="#fff" />
+  //         <Text style={styles.backText}>Go Back</Text>
+  //       </TouchableOpacity>
+  //     </View>
+  //   );
+  // }
 
   const addToCart = () => {
     addItem(product, selectedSize);
@@ -80,13 +90,10 @@ export default function ProductDetails() {
       >
         {/* Product Image */}
         <View style={styles.imageContainer}>
-          {product.image ? (
-            <Image source={{ uri: product.image }} style={styles.image} />
-          ) : (
-            <View style={styles.noImage}>
-              <Text style={styles.noImageText}>No Image Available</Text>
-            </View>
-          )}
+          <Image
+            source={{ uri: product.image || defaultImage }}
+            style={styles.image}
+          />
 
           {product.discount && (
             <View style={styles.discountBadge}>

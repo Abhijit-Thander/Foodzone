@@ -53,7 +53,7 @@ const Home = () => {
           <Text style={styles.buttonText}>Sign Up</Text>
         </Pressable>
       </Link> */}
-      <Link href="/Sign-up" asChild>
+      <Link href="/Sign-in" asChild>
         <Pressable
           style={styles.button}
           onPress={() => supabase.auth.signOut()}

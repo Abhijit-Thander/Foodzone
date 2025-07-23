@@ -8,26 +8,36 @@ import {
   Dimensions,
   Pressable,
   Alert,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
-import products from "@assets/data/products";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message"; // 🔁 Add this import
 import { useCart } from "@/providers/CartProvider";
 import { PizzaSize } from "@/types";
+import { useProduct } from "@/api/products";
 
 const { width } = Dimensions.get("window");
 
-const ItemSize: PizzaSize[] = ["S", "M", "L", "XL"];
+// const ItemSize: PizzaSize[] = ["S", "M", "L", "XL"];
 
 export default function ProductDetails() {
   const { addItem } = useCart();
   const router = useRouter();
   const { id } = useLocalSearchParams();
-  const product = products.find((p) => p.id === Number(id));
+  const { data: product, error, isLoading } = useProduct(Number(id));
+  // const product = products.find((p) => p.id === Number(id));
 
   const [selectedSize, setSelectedsize] = useState<PizzaSize>("M");
+
+  if (isLoading) {
+    return <ActivityIndicator size="large" />;
+  }
+
+  if (error) {
+    return <Text>Error: {error.message}</Text>;
+  }
 
   if (!product) {
     return (
@@ -41,19 +51,19 @@ export default function ProductDetails() {
     );
   }
 
-    const onConfirmDelete = () => {
-      Alert.alert("Delete Dish", "Are you sure you want to delete this dish?", [
-        {
-          text: "Cancel",
-          style: "cancel",
-        },
-        {
-          text: "Delete",
-          onPress: onDelete,
-          style: "destructive",
-        },
-      ]);
-    };
+  const onConfirmDelete = () => {
+    Alert.alert("Delete Dish", "Are you sure you want to delete this dish?", [
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+      {
+        text: "Delete",
+        onPress: onDelete,
+        style: "destructive",
+      },
+    ]);
+  };
   const onDelete = () => {
     // addItem(product, selectedSize);
     // router.push("/cart");
