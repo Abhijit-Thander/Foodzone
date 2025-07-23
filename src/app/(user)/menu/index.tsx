@@ -1,23 +1,34 @@
-import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
-import products from "@assets/data/products";
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
+// import products from "@assets/data/products";
 import ProductItemList from "@/components/ProductItemList";
-import { useEffect } from "react";
 import { supabase } from "@/lib/supabase";
+import { useQuery } from "@tanstack/react-query";
 
 export default function TabOneScreen() {
-  if (!products || products.length === 0) {
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["products"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("products").select("*");
+      if (error) {
+        throw new Error(error.message);
+      }
+      return data;
+    },
+  });
+
+  if (isLoading) {
     return <ActivityIndicator size="large" />;
   }
 
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const { data, error } = await supabase.from("products").select("*");
-
-      console.log("🟢 Products:", data);
-      console.log("error", error);
-    };
-    fetchProducts();
-  }, []);
+  if (error) {
+    return <Text>Error: {error.message}</Text>;
+  }
 
   return (
     <View style={styles.container}>
@@ -29,7 +40,7 @@ export default function TabOneScreen() {
           paddingVertical: 8,
         }}
         keyExtractor={(item) => item.id.toString()}
-        data={products}
+        data={data}
         renderItem={({ item }) => <ProductItemList product={item} />}
       />
     </View>
