@@ -81,6 +81,7 @@ export const useInsertProduct = () => {
 //         })
 //         .eq("id", data.id)
 //         .select()
+//         // .single()
 //         .maybeSingle();
 
 //       // .single();
@@ -93,43 +94,58 @@ export const useInsertProduct = () => {
 //       await queryClient.invalidateQueries({ queryKey: ["products"] });
 //       await queryClient.invalidateQueries({ queryKey: ["products", data.id] });
 //     },
+//     onError(error) {
+//       console.log("Error", error.message);
+//     },
 //   });
 // };
 
 export const useUpdateProduct = () => {
   const queryClient = useQueryClient();
+
   return useMutation({
-    async mutationFn(product: any) {
-      console.log("Updating product with data:", product);
-      const { data: updatedProduct, error } = await supabase
+    async mutationFn(data: any) {
+      console.log(
+        "🧪 Updating product with data:",
+        JSON.stringify(data, null, 2)
+      );
+
+      const { error, data: updatedProduct } = await supabase
         .from("products")
         .update({
-          name: product.name,
-          image: product.image,
-          price: product.price,
-          description: product.description,
-          rating: product.rating,
-          isVeg: product.isVeg,
-          restaurantname: product.restaurantname,
-          deliverytime: product.deliverytime,
-          discount: product.discount,
+          name: data.name,
+          image: data.image ?? null,
+          price: data.price,
+          description: data.description,
+          rating: data.rating,
+          isVeg: data.isVeg,
+          restaurantname: data.restaurantname,
+          deliverytime: data.deliverytime,
+          discount: data.discount,
         })
-        .eq("id", product.id)
-        .select()
+        .eq("id", data.id)
+        .select("*")
         .maybeSingle();
 
       if (error) {
+        console.log("❌ Supabase error:", error.message);
         throw new Error(error.message);
       }
 
-      console.log("✅ Supabase response:", updatedProduct); // this should now work
+      console.log(
+        "✅ Supabase updated product:",
+        JSON.stringify(updatedProduct, null, 2)
+      );
       return updatedProduct;
     },
-    async onSuccess(_, product) {
+
+    async onSuccess(_, data) {
       await queryClient.invalidateQueries({ queryKey: ["products"] });
-      await queryClient.invalidateQueries({
-        queryKey: ["products", product.id],
-      });
+      await queryClient.invalidateQueries({ queryKey: ["products", data.id] });
+    },
+
+    onError(error) {
+      console.log("❌ Mutation error:", error.message);
     },
   });
 };

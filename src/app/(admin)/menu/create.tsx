@@ -167,11 +167,19 @@ const AdminAddItem = () => {
       return;
     }
 
+    if (!id) {
+      Toast.show({
+        type: "error",
+        text1: "Update Error",
+        text2: "Invalid product ID",
+      });
+      return;
+    }
     updateProduct(
       {
         id,
         name,
-        image,
+        image: image || null,
         price: parseFloat(price),
         description,
         rating: parseFloat(rating),
@@ -180,6 +188,7 @@ const AdminAddItem = () => {
         deliverytime: parseInt(deliverytime),
         discount: parseFloat(discount),
       },
+
       {
         onSuccess: () => {
           Toast.show({
