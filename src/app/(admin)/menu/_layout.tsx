@@ -16,26 +16,7 @@ const _layout = () => {
         },
       }}
     >
-      <Stack.Screen
-        name="index"
-        options={{
-          title: "Menu",
-          headerRight: () => (
-            <Link href="/(admin)/menu/create" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="plus-circle"
-                    size={23}
-                    color={"#ffffff"}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
-        }}
-      />
+      <Stack.Screen name="index" options={{}} />
     </Stack>
   );
 };

@@ -9,12 +9,12 @@ import {
   Alert,
   Image,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Colors from "@/constants/Colors";
 import * as ImagePicker from "expo-image-picker";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import Toast from "react-native-toast-message";
-import { useInsertProduct } from "@/api/products";
+import { useInsertProduct, useProduct, useUpdateProduct } from "@/api/products";
 
 const AdminAddItem = () => {
   const [image, setImage] = useState<string | null>(null);
@@ -27,7 +27,11 @@ const AdminAddItem = () => {
   const [deliverytime, setDeliveryTime] = useState("");
   const [discount, setDiscount] = useState("");
 
-  const { id } = useLocalSearchParams();
+  // const { id } = useLocalSearchParams();
+  // const id = parseFloat(typeof idString === "string" ? idString : idString[0]);
+  const params = useLocalSearchParams();
+  const id = params?.id ? Number(params.id) : undefined;
+
   const isUpdating = !!id;
   const [errors, setErrors] = useState<{
     name?: string;
@@ -37,10 +41,25 @@ const AdminAddItem = () => {
   }>({});
 
   const { mutate: insertProduct } = useInsertProduct();
+  const { mutate: updateProduct } = useUpdateProduct();
+  const { data: updatingProduct } = useProduct(id as number);
+
+  useEffect(() => {
+    if (updatingProduct) {
+      setName(updatingProduct.name);
+      setPrice(updatingProduct.price.toString());
+      setDescription(updatingProduct.description);
+      setRating(updatingProduct.rating.toString());
+      setIsVeg(updatingProduct.isVeg);
+      setRestaurantName(updatingProduct.restaurantname);
+      setDeliveryTime(updatingProduct.deliverytime.toString());
+      setDiscount(updatingProduct.discount.toString());
+      setImage(updatingProduct.image);
+    }
+  }, [updatingProduct]);
 
   // Image picker expo
   const pickImage = async () => {
-    // No permissions request is necessary for launching the image library
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images", "videos"],
       allowsEditing: true,
@@ -48,8 +67,13 @@ const AdminAddItem = () => {
       quality: 1,
     });
 
-   
-
+    if (result.canceled) {
+      Toast.show({
+        type: "info",
+        text1: "Image selection cancelled",
+        position: "bottom",
+      });
+    }
     if (!result.canceled) {
       setImage(result.assets[0].uri);
     }
@@ -64,6 +88,18 @@ const AdminAddItem = () => {
     }
   };
 
+  const resetForm = () => {
+    setName("");
+    setPrice("");
+    setDescription("");
+    setRating("");
+    setIsVeg(false);
+    setRestaurantName("");
+    setDeliveryTime("");
+    setDiscount("");
+    setImage(null);
+    setErrors({});
+  };
   // Create item handler
   const onCreate = () => {
     let newErrors: typeof errors = {};
@@ -85,10 +121,10 @@ const AdminAddItem = () => {
         image,
         price: parseFloat(price),
         description,
-        rating,
+        rating: rating ? parseFloat(rating) : 0,
         isVeg,
         restaurantname,
-        deliverytime,
+        deliverytime: deliverytime ? parseInt(deliverytime) : 0,
         discount: parseFloat(discount),
       },
       {
@@ -113,28 +149,12 @@ const AdminAddItem = () => {
       }
     );
 
-    // Reset form
-    setName("");
-    setPrice("");
-    setDescription("");
-    setRating("");
-    setIsVeg(false);
-    setRestaurantName("");
-    setDeliveryTime("");
-    setDiscount("");
-    setImage(null);
-    setErrors({});
+    // reset form
+    resetForm();
   };
 
   // Update item handler
   const onUpdate = () => {
-    Toast.show({
-      type: "success",
-      text1: "Updated Dish 🍽️",
-      position: "top",
-      visibilityTime: 2000,
-    });
-
     let newErrors: typeof errors = {};
     if (!name.trim()) newErrors.name = "Name is required";
     if (!price.trim()) newErrors.price = "Price is required";
@@ -147,20 +167,46 @@ const AdminAddItem = () => {
       return;
     }
 
-    // reset form
-    setName("");
-    setPrice("");
-    setDescription("");
-    setRating("");
-    setIsVeg(false);
-    setRestaurantName("");
-    setDeliveryTime("");
-    setDiscount("");
-    setImage(null);
-    setErrors({});
+    updateProduct(
+      {
+        id,
+        name,
+        image,
+        price: parseFloat(price),
+        description,
+        rating: parseFloat(rating),
+        isVeg,
+        restaurantname,
+        deliverytime: parseInt(deliverytime),
+        discount: parseFloat(discount),
+      },
+      {
+        onSuccess: () => {
+          Toast.show({
+            type: "success",
+            text1: "Udate The Dish 🍽️",
+            position: "top",
+            visibilityTime: 2000,
+          });
+          router.back();
+        },
+        onError: (error: any) => {
+          Toast.show({
+            type: "error",
+            text1: "Error",
+            text2: error.message,
+            position: "top",
+            visibilityTime: 2000,
+          });
+          console.log(error.message);
+        },
+      }
+    );
 
-    console.log("🟢 New Item:");
-    Alert.alert("Success", "Item updated successfully!");
+    //reset form
+    resetForm();
+    console.log("🧪 Update ID:", id);
+    console.log("✅ Supabase response:", updateProduct);
   };
 
   return (

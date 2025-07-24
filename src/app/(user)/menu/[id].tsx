@@ -26,8 +26,10 @@ const ItemSize: PizzaSize[] = ["S", "M", "L", "XL"];
 export default function ProductDetails() {
   const router = useRouter();
   const { addItem } = useCart();
-  const { id } = useLocalSearchParams();
-  const { data: product, error, isLoading } = useProduct(Number(id));
+  const { id: idString } = useLocalSearchParams();
+  const id = parseFloat(typeof idString === "string" ? idString : idString[0]);
+
+  const { data: product, error, isLoading } = useProduct(id);
   const [selectedSize, setSelectedsize] = useState<PizzaSize>("M");
 
   if (isLoading) {

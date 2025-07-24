@@ -10,26 +10,19 @@ import {
   Alert,
   ActivityIndicator,
 } from "react-native";
-import React, { useState } from "react";
+import React from "react";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import Toast from "react-native-toast-message"; // 🔁 Add this import
-import { useCart } from "@/providers/CartProvider";
-import { PizzaSize } from "@/types";
+import Toast from "react-native-toast-message";
 import { useProduct } from "@/api/products";
 
 const { width } = Dimensions.get("window");
 
-// const ItemSize: PizzaSize[] = ["S", "M", "L", "XL"];
-
 export default function ProductDetails() {
-  const { addItem } = useCart();
   const router = useRouter();
-  const { id } = useLocalSearchParams();
-  const { data: product, error, isLoading } = useProduct(Number(id));
-  // const product = products.find((p) => p.id === Number(id));
-
-  const [selectedSize, setSelectedsize] = useState<PizzaSize>("M");
+  const { id: idString } = useLocalSearchParams();
+  const id = parseFloat(typeof idString === "string" ? idString : idString[0]);
+  const { data: product, error, isLoading } = useProduct(id);
 
   if (isLoading) {
     return <ActivityIndicator size="large" />;
