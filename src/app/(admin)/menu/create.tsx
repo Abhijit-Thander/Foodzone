@@ -27,8 +27,6 @@ const AdminAddItem = () => {
   const [deliverytime, setDeliveryTime] = useState("");
   const [discount, setDiscount] = useState("");
 
-  // const { id } = useLocalSearchParams();
-  // const id = parseFloat(typeof idString === "string" ? idString : idString[0]);
   const params = useLocalSearchParams();
   const id = params?.id ? Number(params.id) : undefined;
 
@@ -135,6 +133,7 @@ const AdminAddItem = () => {
             position: "top",
             visibilityTime: 2000,
           });
+          resetForm();
           router.back();
         },
         onError: (error: any) => {
@@ -148,9 +147,6 @@ const AdminAddItem = () => {
         },
       }
     );
-
-    // reset form
-    resetForm();
   };
 
   // Update item handler

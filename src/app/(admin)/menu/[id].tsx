@@ -14,7 +14,7 @@ import React from "react";
 import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
-import { useProduct } from "@/api/products";
+import { useDeleteProduct, useProduct } from "@/api/products";
 
 const { width } = Dimensions.get("window");
 
@@ -23,6 +23,8 @@ export default function ProductDetails() {
   const { id: idString } = useLocalSearchParams();
   const id = parseFloat(typeof idString === "string" ? idString : idString[0]);
   const { data: product, error, isLoading } = useProduct(id);
+
+  const { mutate: deleteProduct } = useDeleteProduct();
 
   if (isLoading) {
     return <ActivityIndicator size="large" />;
@@ -57,16 +59,27 @@ export default function ProductDetails() {
       },
     ]);
   };
-  const onDelete = () => {
-    // addItem(product, selectedSize);
-    // router.push("/cart");
 
-    Toast.show({
-      type: "success",
-      text1: "Deleted Dish 🍽️",
-      text2: `${product.name} has deleted successfully`,
-      position: "top",
-      visibilityTime: 2000,
+  const onDelete = () => {
+    deleteProduct(id, {
+      onSuccess: () => {
+        Toast.show({
+          type: "success",
+          text1: "Deleted Dish 🍽️",
+          text2: `${product.name} has been deleted successfully`,
+          position: "top",
+          visibilityTime: 2000,
+        });
+        router.back();
+      },
+      onError: (error: any) => {
+        Toast.show({
+          type: "error",
+          text1: "Delete Failed ❌",
+          text2: error.message,
+          position: "top",
+        });
+      },
     });
   };
 

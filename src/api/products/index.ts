@@ -61,55 +61,11 @@ export const useInsertProduct = () => {
   });
 };
 
-// export const useUpdateProduct = () => {
-//   const queryClient = useQueryClient();
-//   return useMutation({
-//     async mutationFn(data: any) {
-//       console.log("Updating product with data:", data);
-//       const { error, data: updatedProduct } = await supabase
-//         .from("products")
-//         .update({
-//           name: data.name,
-//           image: data.image,
-//           price: data.price,
-//           description: data.description,
-//           rating: data.rating,
-//           isVeg: data.isVeg,
-//           restaurantname: data.restaurantname,
-//           deliverytime: data.deliverytime,
-//           discount: data.discount,
-//         })
-//         .eq("id", data.id)
-//         .select()
-//         // .single()
-//         .maybeSingle();
-
-//       // .single();
-//       if (error) {
-//         throw new Error(error.message);
-//       }
-//       return updatedProduct;
-//     },
-//     async onSuccess(_, data) {
-//       await queryClient.invalidateQueries({ queryKey: ["products"] });
-//       await queryClient.invalidateQueries({ queryKey: ["products", data.id] });
-//     },
-//     onError(error) {
-//       console.log("Error", error.message);
-//     },
-//   });
-// };
-
 export const useUpdateProduct = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
     async mutationFn(data: any) {
-      console.log(
-        "🧪 Updating product with data:",
-        JSON.stringify(data, null, 2)
-      );
-
       const { error, data: updatedProduct } = await supabase
         .from("products")
         .update({
@@ -131,11 +87,6 @@ export const useUpdateProduct = () => {
         console.log("❌ Supabase error:", error.message);
         throw new Error(error.message);
       }
-
-      console.log(
-        "✅ Supabase updated product:",
-        JSON.stringify(updatedProduct, null, 2)
-      );
       return updatedProduct;
     },
 
@@ -146,6 +97,24 @@ export const useUpdateProduct = () => {
 
     onError(error) {
       console.log("❌ Mutation error:", error.message);
+    },
+  });
+};
+
+export const useDeleteProduct = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (Id: number) => {
+      const { error } = await supabase.from("products").delete().eq("id", Id);
+
+      if (error) throw new Error(error.message);
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["products"] });
+    },
+    onError: (error) => {
+      console.error("Delete error:", error.message);
     },
   });
 };
