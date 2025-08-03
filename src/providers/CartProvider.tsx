@@ -1,6 +1,9 @@
-import { CartItem, Product } from "@/types";
+// import { Tables } from "@/database.types";
+import { CartItem, Tables } from "@/types";
 import * as Crypto from "expo-crypto";
 import { useContext, createContext, PropsWithChildren, useState } from "react";
+
+type Product = Tables<"products">;
 
 type CartType = {
   items: CartItem[];
@@ -52,11 +55,11 @@ const CartProvider = ({ children }: PropsWithChildren) => {
 
   // Total Price
   const total = items.reduce(
-    (sum, item) => sum += item.product.price * item.quantity,
+    (sum, item) => (sum += item.product.price  * item.quantity),
     0
   );
   return (
-    <CartContext.Provider value={{ items, addItem, updateQuantity ,total}}>
+    <CartContext.Provider value={{ items, addItem, updateQuantity, total }}>
       {children}
     </CartContext.Provider>
   );

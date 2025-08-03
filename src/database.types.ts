@@ -24,7 +24,7 @@ export type Database = {
           image: string | null;
           isVeg: boolean | null;
           name: string | null;
-          price: number | null;
+          price: number;
           rating: number | null;
           restaurantname: string | null;
         };
