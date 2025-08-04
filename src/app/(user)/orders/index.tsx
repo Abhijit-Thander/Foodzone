@@ -25,6 +25,7 @@ const index = () => {
   return (
     <View style={{ padding: 10 }}>
       <FlatList
+        showsVerticalScrollIndicator={false}
         contentContainerStyle={{
           gap: 10,
           paddingVertical: 8,

@@ -4,14 +4,14 @@ import { Tables } from "@/types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useAdminOrderList = ({ archived = false }) => {
-  let statues = archived ? ["Delivered"] : ["New", "Cooking", "Delivering"];
-
+  let statues = archived ? ["delivered"] : ["new", "cooking", "delivering"];
   return useQuery({
     queryKey: ["orders", { archived }],
     queryFn: async () => {
       const { data, error } = await supabase
         .from("orders")
         .select("*")
+        // .single()
         .in("status", statues)
         .order("created_at", { ascending: false });
       if (error) {

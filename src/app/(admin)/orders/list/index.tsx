@@ -1,4 +1,10 @@
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  StyleSheet,
+  Text,
+  View,
+} from "react-native";
 import React from "react";
 import OrdersListItem from "@/components/OrdersListItem";
 import { useAdminOrderList } from "@/api/orders";
@@ -9,10 +15,11 @@ const index = () => {
     isLoading,
     error,
   } = useAdminOrderList({ archived: false });
+
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <Text>Loading...</Text>
+        <ActivityIndicator size={"large"} />
       </View>
     );
   }
@@ -28,14 +35,15 @@ const index = () => {
   return (
     <View style={{ padding: 10 }}>
       <FlatList
+        data={orders}
+        renderItem={({ item }) => <OrdersListItem order={item} />}
         contentContainerStyle={{
           gap: 10,
           paddingVertical: 8,
         }}
-        data={orders}
-        renderItem={({ item }) => <OrdersListItem order={item} />}
+        showsVerticalScrollIndicator={false}
       />
-    </View>
+    </View> 
   );
 };
 
