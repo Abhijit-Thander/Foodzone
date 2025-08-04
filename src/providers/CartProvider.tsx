@@ -1,5 +1,6 @@
 // import { Tables } from "@/database.types";
 import { useInsertOrders } from "@/api/orders";
+import { useInsertOrdersItems } from "@/api/orders-items";
 import { CartItem, Tables } from "@/types";
 import * as Crypto from "expo-crypto";
 import { router } from "expo-router";
@@ -26,6 +27,7 @@ const CartProvider = ({ children }: PropsWithChildren) => {
   const [items, setItems] = useState<CartItem[]>([]);
 
   const { mutate: insertOrder } = useInsertOrders();
+  const { mutate: insertOrderItems } = useInsertOrdersItems();
 
   const addItem = (product: Product, size: CartItem["size"]) => {
     const existingItem = items.find(
@@ -73,12 +75,24 @@ const CartProvider = ({ children }: PropsWithChildren) => {
     insertOrder(
       { total },
       {
-        onSuccess: (data) => {
-          clearCart();
-          router.push(`/(user)/orders/${data.id}`);
-        },
+        onSuccess: saveOrdersItems,
       }
     );
+  };
+
+  const saveOrdersItems = (order: Tables<"orders">) => {
+    const orderItems = items.map((cartitem) => ({
+      order_id: order.id,
+      product_id: cartitem.product_id,
+      quantity: cartitem.quantity,
+      size: cartitem.size,
+    }));
+    insertOrderItems(orderItems, {
+      onSuccess() {
+        clearCart();
+        router.push(`/(user)/orders/${order.id}`);
+      },
+    });
   };
 
   return (
