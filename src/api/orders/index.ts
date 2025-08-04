@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import { useAuth } from "@/providers/AuthProvider";
+import { Tables } from "@/types";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 
 export const useAdminOrderList = ({ archived = false }) => {
@@ -11,7 +12,8 @@ export const useAdminOrderList = ({ archived = false }) => {
       const { data, error } = await supabase
         .from("orders")
         .select("*")
-        .in("status", statues);
+        .in("status", statues)
+        .order("created_at", { ascending: false });
       if (error) {
         throw new Error(error.message);
       }
@@ -31,11 +33,53 @@ export const useMyOrderList = () => {
       const { data, error } = await supabase
         .from("orders")
         .select("*")
-        .eq("user_id", id);
+        .eq("user_id", id)
+        .order("created_at", { ascending: false });
       if (error) {
         throw new Error(error.message);
       }
       return data;
+    },
+  });
+};
+
+export const useOrdersDetails = (id: number) => {
+  return useQuery({
+    queryKey: ["orders", id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("orders")
+        .select("*")
+        .eq("id", id)
+        .single();
+      if (error) {
+        throw new Error(error.message);
+      }
+      return data;
+    },
+  });
+};
+
+// Create a new order
+export const useInsertOrders = () => {
+  const { session } = useAuth();
+  const userId = session?.user.id;
+
+  const queryClient = useQueryClient();
+  return useMutation({
+    async mutationFn(data: Tables<"orders">) {
+      const { error, data: newOrder } = await supabase
+        .from("orders")
+        .insert({ ...data, user_id: userId })
+        .select()
+        .single();
+      if (error) {
+        throw new Error(error.message);
+      }
+      return newOrder;
+    },
+    async onSuccess() {
+      await queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
   });
 };

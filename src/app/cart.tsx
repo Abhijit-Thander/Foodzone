@@ -12,14 +12,14 @@ import Colors from "@/constants/Colors";
 import Toast from "react-native-toast-message"; //
 
 export default function CartScreen() {
-  const { items, total } = useCart();
+  const { items, total, checkout } = useCart();
 
-  const OnOrderPlace = () => {
-    Toast.show({
-      type: "success",
-      text1: "Order Placed Successfully",
-    });
-  };
+  // const OnOrderPlace = () => {
+  //   Toast.show({
+  //     type: "success",
+  //     text1: "Order Placed Successfully",
+  //   });
+  // };
   return (
     <View style={styles.container}>
       <Stack.Screen
@@ -52,10 +52,7 @@ export default function CartScreen() {
 
           <View style={styles.checkoutBar}>
             <Text style={styles.totalText}>Total: ₹{total.toFixed(2)}</Text>
-            <TouchableOpacity
-              style={styles.checkoutButton}
-              onPress={OnOrderPlace}
-            >
+            <TouchableOpacity style={styles.checkoutButton} onPress={checkout}>
               <Text style={styles.checkoutText}>Place Order</Text>
             </TouchableOpacity>
           </View>

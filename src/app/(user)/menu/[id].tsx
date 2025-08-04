@@ -58,19 +58,6 @@ export default function ProductDetails() {
       <Stack.Screen
         options={{
           title: "Details",
-          // headerRight: () => (
-          //   <Link href="/cart" asChild>
-          //     <Pressable>
-          //       {({ pressed }) => (
-          //         <FontAwesome
-          //           name="opencart"
-          //           size={25}
-          //           style={{ marginRight: 10, opacity: pressed ? 0.5 : 1 }}
-          //         />
-          //       )}
-          //     </Pressable>
-          //   </Link>
-          // ),
         }}
       />
 

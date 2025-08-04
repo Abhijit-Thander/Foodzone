@@ -1,6 +1,8 @@
 // import { Tables } from "@/database.types";
+import { useInsertOrders } from "@/api/orders";
 import { CartItem, Tables } from "@/types";
 import * as Crypto from "expo-crypto";
+import { router } from "expo-router";
 import { useContext, createContext, PropsWithChildren, useState } from "react";
 
 type Product = Tables<"products">;
@@ -10,6 +12,7 @@ type CartType = {
   addItem: (product: Product, size: CartItem["size"]) => void;
   updateQuantity: (Itemid: string, quantity: -1 | 1) => void;
   total: number;
+  checkout: () => void;
 };
 
 const CartContext = createContext<CartType>({
@@ -17,13 +20,16 @@ const CartContext = createContext<CartType>({
   addItem: () => {},
   updateQuantity: () => {},
   total: 0,
+  checkout: () => {},
 });
 const CartProvider = ({ children }: PropsWithChildren) => {
   const [items, setItems] = useState<CartItem[]>([]);
 
+  const { mutate: insertOrder } = useInsertOrders();
+
   const addItem = (product: Product, size: CartItem["size"]) => {
     const existingItem = items.find(
-      (item) => item.product === product && item.size === size
+      (item) => item.product_id === product.id && item.size === size
     );
     if (existingItem) {
       updateQuantity(existingItem.id, 1);
@@ -55,11 +61,30 @@ const CartProvider = ({ children }: PropsWithChildren) => {
 
   // Total Price
   const total = items.reduce(
-    (sum, item) => (sum += item.product.price  * item.quantity),
+    (sum, item) => (sum += (item.product.price ?? 0) * item.quantity),
     0
   );
+
+  const clearCart = () => {
+    setItems([]);
+  };
+
+  const checkout = () => {
+    insertOrder(
+      { total },
+      {
+        onSuccess: (data) => {
+          clearCart();
+          router.push(`/(user)/orders/${data.id}`);
+        },
+      }
+    );
+  };
+
   return (
-    <CartContext.Provider value={{ items, addItem, updateQuantity, total }}>
+    <CartContext.Provider
+      value={{ items, addItem, updateQuantity, total, checkout }}
+    >
       {children}
     </CartContext.Provider>
   );
