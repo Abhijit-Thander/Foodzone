@@ -44,7 +44,7 @@ export const useMyOrderList = () => {
 };
 
 export const useOrdersDetails = (id: number) => {
-  return useQuery({ 
+  return useQuery({
     queryKey: ["orders", id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -80,6 +80,43 @@ export const useInsertOrders = () => {
     },
     async onSuccess() {
       await queryClient.invalidateQueries({ queryKey: ["orders"] });
+    },
+  });
+};
+
+// Update an order status
+export const useUpdateOrder = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    async mutationFn({
+      id,
+      updatedFields,
+    }: {
+      id: number;
+      updatedFields: Tables<"orders">;
+    }) {
+      const { error, data: updatedOrder } = await supabase
+        .from("orders")
+        .update(updatedFields)
+        .eq("id", id)
+        .select("*")
+        .maybeSingle();
+
+      if (error) {
+        console.log("❌ Supabase error:", error.message);
+        throw new Error(error.message);
+      }
+      return updatedOrder;
+    },
+
+    async onSuccess(_, data) {
+      await queryClient.invalidateQueries({ queryKey: ["orders"] });
+      await queryClient.invalidateQueries({ queryKey: ["orders", data.id] });
+    },
+
+    onError(error) {
+      console.log("❌ Mutation error:", error.message);
     },
   });
 };

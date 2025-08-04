@@ -36,8 +36,8 @@ export default function ProductDetails() {
     return <ActivityIndicator size="large" />;
   }
 
-  if (error) {
-    return <Text>Error: {error.message}</Text>;
+  if (error || !product) {
+    return <Text>Error: {error?.message || "Product not found"}</Text>;
   }
 
   const addToCart = () => {
