@@ -28,7 +28,7 @@ const OrdersDetailsScreen = () => {
       </View>
     );
   }
-  if (error) return <Text>Error: {error.message}</Text>;
+  if (error || !order) return <Text>Error: {error?.message}</Text>;
 
   return (
     <View style={{ padding: 10, gap: 20 }}>

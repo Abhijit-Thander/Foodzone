@@ -25,7 +25,7 @@ const OrdersDetailsScreen = () => {
       </View>
     );
   }
-  if (error) return <Text>Error: {error.message}</Text>;
+  if (error || !order) return <Text>Error: {error?.message}</Text>;
 
   return (
     <View style={{ padding: 10, gap: 20 }}>
@@ -33,7 +33,7 @@ const OrdersDetailsScreen = () => {
       <OrderListItem order={order} />
 
       <FlatList
-        data={order?.order_items}
+        data={order.order_items}
         renderItem={({ item }) => <OrderItemListItem item={item} />}
         contentContainerStyle={{ gap: 10, paddingVertical: 8 }}
       />
