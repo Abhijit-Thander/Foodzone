@@ -16,11 +16,19 @@ export default function TabOneScreen() {
   const { data: products, isLoading, error } = useProductList();
 
   if (isLoading) {
-    return <ActivityIndicator size="large" />;
+    return (
+      <View style={styles.centered}>
+        <ActivityIndicator size="large" />
+      </View>
+    );
   }
 
   if (error) {
-    return <Text>Error: {error.message}</Text>;
+    return (
+      <View style={styles.centered}>
+        <Text>Error: {error.message}</Text>
+      </View>
+    );
   }
   return (
     <View style={styles.container}>
@@ -66,5 +74,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: "bold",
+  },
+  centered: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

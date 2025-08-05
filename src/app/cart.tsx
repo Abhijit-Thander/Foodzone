@@ -9,17 +9,10 @@ import { useCart } from "@/providers/CartProvider";
 import CartListItem from "@/components/CartListItem";
 import { Stack } from "expo-router";
 import Colors from "@/constants/Colors";
-import Toast from "react-native-toast-message"; //
 
 export default function CartScreen() {
   const { items, total, checkout } = useCart();
 
-  // const OnOrderPlace = () => {
-  //   Toast.show({
-  //     type: "success",
-  //     text1: "Order Placed Successfully",
-  //   });
-  // };
   return (
     <View style={styles.container}>
       <Stack.Screen

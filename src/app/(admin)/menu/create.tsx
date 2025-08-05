@@ -12,9 +12,13 @@ import {
 import React, { useEffect, useState } from "react";
 import Colors from "@/constants/Colors";
 import * as ImagePicker from "expo-image-picker";
+import * as FileSystem from "expo-file-system";
+import { decode } from "base64-arraybuffer";
 import { router, Stack, useLocalSearchParams } from "expo-router";
 import Toast from "react-native-toast-message";
 import { useInsertProduct, useProduct, useUpdateProduct } from "@/api/products";
+import { randomUUID } from "expo-crypto";
+import { supabase } from "@/lib/supabase";
 
 const AdminAddItem = () => {
   const [image, setImage] = useState<string | null>(null);
@@ -44,15 +48,19 @@ const AdminAddItem = () => {
 
   useEffect(() => {
     if (updatingProduct) {
-      setName(updatingProduct.name);
-      setPrice(updatingProduct.price.toString());
-      setDescription(updatingProduct.description);
-      setRating(updatingProduct.rating.toString());
-      setIsVeg(updatingProduct.isVeg);
-      setRestaurantName(updatingProduct.restaurantname);
-      setDeliveryTime(updatingProduct.deliverytime.toString());
-      setDiscount(updatingProduct.discount.toString());
-      setImage(updatingProduct.image);
+      setName(updatingProduct.name ?? "");
+      setPrice(updatingProduct.price.toString() ?? 0);
+      setDescription(updatingProduct.description ?? "");
+      setRating((updatingProduct.rating ?? "").toString());
+      setIsVeg(updatingProduct.isVeg ?? false);
+      setRestaurantName(updatingProduct.restaurantname ?? "");
+      setDeliveryTime((updatingProduct.deliverytime ?? 0).toString());
+      setDiscount(
+        updatingProduct.discount != null
+          ? updatingProduct.discount.toString()
+          : "0"
+      );
+      setImage(updatingProduct.image ?? "");
     }
   }, [updatingProduct]);
 
@@ -74,6 +82,26 @@ const AdminAddItem = () => {
     }
     if (!result.canceled) {
       setImage(result.assets[0].uri);
+    }
+  };
+
+  // Upload image to Supabase
+  const uploadImage = async () => {
+    if (!image?.startsWith("file://")) {
+      return;
+    }
+
+    const base64 = await FileSystem.readAsStringAsync(image, {
+      encoding: "base64",
+    });
+    const filePath = `${randomUUID()}.png`;
+    const contentType = "image/png";
+    const { data, error } = await supabase.storage
+      .from("product-images")
+      .upload(filePath, decode(base64), { contentType });
+
+    if (data) {
+      return data.path;
     }
   };
 
@@ -99,7 +127,7 @@ const AdminAddItem = () => {
     setErrors({});
   };
   // Create item handler
-  const onCreate = () => {
+  const onCreate = async () => {
     let newErrors: typeof errors = {};
     if (!name.trim()) newErrors.name = "Name is required";
     if (!price.trim()) newErrors.price = "Price is required";
@@ -112,11 +140,14 @@ const AdminAddItem = () => {
       return;
     }
 
+    // Upload image if selected
+    const imagePath = await uploadImage();
+
     // insert product logic using react query
     insertProduct(
       {
         name,
-        image,
+        image: imagePath || null, // Use uploaded image path or null
         price: parseFloat(price),
         description,
         rating: rating ? parseFloat(rating) : 0,
@@ -124,6 +155,7 @@ const AdminAddItem = () => {
         restaurantname,
         deliverytime: deliverytime ? parseInt(deliverytime) : 0,
         discount: parseFloat(discount),
+        imagePath, // Use uploaded image path or null
       },
       {
         onSuccess: () => {
@@ -237,7 +269,6 @@ const AdminAddItem = () => {
         )}
       </Pressable>
       <Text style={[styles.label, styles.imageLabel]} onPress={pickImage}>
-        {" "}
         Select Image
       </Text>
 

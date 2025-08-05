@@ -3,6 +3,7 @@ import React from "react";
 import { Link, useSegments } from "expo-router";
 // import Toast from "react-native-toast-message"; // 🔁 Add this import
 import { Tables } from "@/database.types";
+// import RemoteImage from "@/components/RemoteImage";
 
 const defaultImage =
   "https://media.istockphoto.com/id/1366580759/vector/white-broken-plate-with-fork-and-knife.jpg?s=612x612&w=0&k=20&c=9mwXZPvfICESTumsuRZ0FJgSifBgDmzcvmGy854tTzI=";

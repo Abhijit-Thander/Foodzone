@@ -15,6 +15,8 @@ import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import Toast from "react-native-toast-message";
 import { useDeleteProduct, useProduct } from "@/api/products";
+const defaultImage =
+  "https://media.istockphoto.com/id/1366580759/vector/white-broken-plate-with-fork-and-knife.jpg?s=612x612&w=0&k=20&c=9mwXZPvfICESTumsuRZ0FJgSifBgDmzcvmGy854tTzI=";
 
 const { width } = Dimensions.get("window");
 
@@ -112,7 +114,10 @@ export default function ProductDetails() {
         {/* Product Image */}
         <View style={styles.imageContainer}>
           {product.image ? (
-            <Image source={{ uri: product.image }} style={styles.image} />
+            <Image
+              source={{ uri: product.image || defaultImage }}
+              style={styles.image}
+            />
           ) : (
             <View style={styles.noImage}>
               <Text style={styles.noImageText}>No Image Available</Text>

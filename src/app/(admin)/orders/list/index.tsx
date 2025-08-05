@@ -17,6 +17,7 @@ const index = () => {
     error,
   } = useAdminOrderList({ archived: false });
 
+  // Subscribe to new orders
   useInsertOrderSubscription();
 
   if (isLoading) {

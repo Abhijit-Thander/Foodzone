@@ -4,6 +4,8 @@ import Colors from "../constants/Colors";
 import { CartItem } from "../types";
 import { FontAwesome } from "@expo/vector-icons";
 import { useCart } from "../providers/CartProvider";
+const defaultImage =
+  "https://media.istockphoto.com/id/1366580759/vector/white-broken-plate-with-fork-and-knife.jpg?s=612x612&w=0&k=20&c=9mwXZPvfICESTumsuRZ0FJgSifBgDmzcvmGy854tTzI=";
 
 type CartListItemProps = {
   cartItem: CartItem;
@@ -15,7 +17,7 @@ const CartListItem = ({ cartItem }: CartListItemProps) => {
   return (
     <View style={styles.container}>
       <Image
-        source={{ uri: cartItem.product.image || "" }}
+        source={{ uri: cartItem.product.image || defaultImage }}
         style={styles.image}
         resizeMode="cover"
       />
