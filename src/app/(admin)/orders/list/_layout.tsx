@@ -10,7 +10,7 @@ const _layout = () => {
     <SafeAreaView edges={["top"]} style={{ flex: 1, backgroundColor: "white" }}>
       <TopTab>
         <TopTab.Screen name="index" options={{ title: "Active 🟢" }} />
-        <TopTab.Screen name="archive" options={{ title: "Archive" }} />
+        <TopTab.Screen name="archive" options={{ title: "Archive 🔴" }} />
       </TopTab>
       <StatusBar barStyle="dark-content" />
     </SafeAreaView>

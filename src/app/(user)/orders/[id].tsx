@@ -6,17 +6,22 @@ import {
   Text,
   View,
 } from "react-native";
-import React from "react";
+import React, { use } from "react";
 import { Stack, useLocalSearchParams } from "expo-router";
 import OrderListItem from "@/components/OrdersListItem";
 import OrderItemListItem from "@/components/OrderItemListItem";
 import { useOrdersDetails } from "@/api/orders";
+import { useUpdateOrderStatusSubscription } from "@/api/orders/subscriptions";
 
 const OrdersDetailsScreen = () => {
   const { id: idString } = useLocalSearchParams();
   const id = parseFloat(typeof idString === "string" ? idString : idString[0]);
 
   const { data: order, isLoading, error } = useOrdersDetails(id);
+  // Subscribe to order status updates
+  // This will automatically update the order details when the status changes
+  // and invalidate the query to refetch the latest data.
+  useUpdateOrderStatusSubscription(id);
 
   if (isLoading) {
     return (

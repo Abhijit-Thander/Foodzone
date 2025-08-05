@@ -5,9 +5,10 @@ import {
   Text,
   View,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import OrdersListItem from "@/components/OrdersListItem";
 import { useAdminOrderList } from "@/api/orders";
+import { useInsertOrderSubscription } from "@/api/orders/subscriptions";
 
 const index = () => {
   const {
@@ -15,6 +16,8 @@ const index = () => {
     isLoading,
     error,
   } = useAdminOrderList({ archived: false });
+
+  useInsertOrderSubscription();
 
   if (isLoading) {
     return (
@@ -43,7 +46,7 @@ const index = () => {
         }}
         showsVerticalScrollIndicator={false}
       />
-    </View> 
+    </View>
   );
 };
 
